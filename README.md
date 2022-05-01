@@ -4,6 +4,23 @@
 
 **If you want to learn more about IT topics, visit my website:** [**IA Notes**](https://ia-notes.com/)
 
+**ft_otp** encourages us **to implement a TOTP generator**. To use this generator you will have to clone the repository:
+
+    git clone https://github.com/pgomez-a/ft_otp.git ; cd ./ft_otp/
+    
+Run make to compile the program:
+
+    make
+    
+Use **-g hex_filename** to store and encrypt the key in hex_filename and store it in ft_otp.key:
+
+    # hex_filename must have a hexadecimal number of at least 64 bits
+    ./ft_otp -g hex_filename
+    
+Use **-k ft_otp.key** to create a TOTP with the secret key stored in ft_otp.key:
+
+    ./ft_otp -k ft_otp.key
+
 ### 2-Factor Authentication (2FA)
 **2FA** enhances the security of a system by adding an additional layer of security. When a user tries to access a system (such as a server or a service) they must **authenticate with a password and an additional token** that the user must have in order to access the system.<br>
 Thus, with 2FA, there are two layers of security that the user must go through to access private data. Without that second token, a hacker cannot access the system even if the first password is known. One way to achieve this 2FA is through the use of **One-Time Passwords**, which will be described below.
