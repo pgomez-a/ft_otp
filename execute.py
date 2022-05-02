@@ -4,7 +4,6 @@
 
 from cryptography.fernet import Fernet
 import time
-import math
 import hmac
 import sys
 
@@ -47,18 +46,17 @@ def create_key(master_key):
     except:
         print("Error: (open) can't obtain master key")
         return
-    time_period = str(math.floor(time.time() / 30))
-    hmac_sha1 = hmac.new(master_key, time_period.encode(), "sha1")
+    counter = str(time.time() // 30)
+    hmac_sha1 = hmac.new(master_key, counter.encode(), "sha1")
     hmac_sha1 = hmac_sha1.hexdigest()
-    key = hmac_sha1[int(hmac_sha1[39], 16)*2:int(hmac_sha1[39], 16)*2 + 7]
-    key += "0"
-    key = int(key, 16)
-    key = str(key%(10**6))
-    if len(key) < 6:
-        len_key = len(key)
-        for i in range(len_key, 6):
-            key += "0"
-    print(key)
+    offset = int(hmac_sha1[39], 16)
+    totp = hmac_sha1[offset*2:offset*2 + 8]
+    totp = str(int(totp[0], 16) & 0x7) + totp[1:]
+    totp = int(totp, 16)
+    totp = str(totp%(10**6))
+    while len(totp) != 6:
+        totp += "0"
+    print(totp)
 
 ##################################
 # Program: python execute.py S G #
