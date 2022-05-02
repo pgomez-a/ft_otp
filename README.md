@@ -48,4 +48,25 @@ This type of OTP is event-based, which implies an **HMAC-based one-time password
 To obtain an OTP, the token provides the counter to the HMAC using the secret key. Additionally, the HMAC uses the **SHA-1 algorithm** to obtain a 160-bit string that is compressed to 6 digits.
 
 ### Time-based One-Time Passwords (TOTP)
-**TOTP** is based on HTOP. Although this time **the moving factor is time** instead of a counter. TOTP uses time in 30 or 60 second increments, so the OTP will be valid during that time interval.
+**TOTP** is based on HTOP. Although this time **the moving factor is time** instead of a counter. TOTP uses time in 30 or 60 second increments, so the OTP will be valid during that time interval.<br>
+
+To implement our TOTP algorithm we will follow **[RFC 6238](https://datatracker.ietf.org/doc/html/rfc6238#section-4.2).** This document describes the TOTP function as follows:
+
+    # TOTP Function
+    TOTP(secret_key) = HOTP(secret_key, counter)
+    
+    # TOTP parameters
+    counter = (Current Unix time - T0) / X
+    T0 = 0 (by default)
+    Time Step X = 30 (by default)
+    
+So we see that TOTP implements HOTP, so now we focus on **[RFC 4226](https://datatracker.ietf.org/doc/html/rfc4226#section-5.3)**:
+
+    # First Step: obtain 20-byte string with HMAC-SHA1
+    HS = HMAC-SHA1(secret_key, counter)
+    
+    # Second Step: dynamic truncation (DT)
+    Sbits = DT(HS)
+    
+    # Third Step: otain HOTP value
+    HOTP value = Sbits mod 10^6
